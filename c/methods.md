@@ -12,13 +12,18 @@ char a[11] = "KOREA";
 char b[]= "12345";
 
 strcat(a, b)
+printf(a)
+
+--> KOREA12345
 ```
+
 
 ### puts()
 <hr />
 
 - 오직 문자열(string)을 출력하기 하는 함수
 - 문자열을 출력한 후 자동으로 줄바꿈을 함
+
 
 ### printf()
 <hr />

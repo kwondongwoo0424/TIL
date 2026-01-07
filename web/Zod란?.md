@@ -37,13 +37,59 @@ Zod는 스키마(Schema)를 한 번만 선언하면
 타입 안정성이란 컴파일 단계에서 값의 타입이 올바르게 사용되도록 보장하는 것
 런타임 안정성이란 프로그램 실행 중 데이터가 기대한 조건을 만족하는지 검증하는 것
 
+\* 타입 추론이란 TypeScript가 변수나 표현식의 타입을 명시적으로 지정하지 않아도 초기값, 함수 반환 등을 분석하여 자동을 타입을 결정하고 유추하는 기능
+
 ### 근데 Zod 쓰거나 안쓰거나 서버에서 이상한 값 반환하면 런타임에서 서비스 멈추는거 아님??
 만약 예외처리를 하지 않는다면 서버에서 이상한 값을 반환할떄 Zod 사용 여부와 상관없이 서비스가 멈출것이다. 
 예외처리를 한다는 가정하에 TS만 사용한다면 예외처를 한다고 하여도 런타임 환경에서는 타입소거가 일어나기 떄문에 서버에서 이상한 값을 반환해도 에러가 나지않고 그 데이터를 사용하려고 할떄 예상하지 못한 에러가 발생하여 서비스가 멈출 것이다.
 하지만 Zod를 사용한다면 서버에서 이상한 값을 반환하더라도 바로 유효성 검증을 통해 예외를 발생시켜 에러 핸들링을 할 수 있고 따라서 서비스가 멈추지 않을 것이다.
 
+### parse와 safeParse 차이점
+`.parse()`는 데이터가 유효하면 그대로 반환
+유효하지 않으면 오류를 던짐(throw error) -> try-catch문을 사용해 오류발생 시 예외처리를 해야함
+
+`.safeParse()`는 데이터가 유효하면 검증 결과를 객체로 반환 { success: true, data: { ... } }
+유효하지 않으면 오류를 발생시키지 안고 검증 결과를 객체로 반환 { success: false, error: ZodError }
+
+### parse와 safeParse 공통점
+Zod 스키마는 데이터를 검증하며 불필요한 필드를 제거하거나 값을 변환하기도 한다.
+스키마에 정의되지 않은 필드가 포함되어있다면 이를 자동으로 삭제하고 유효성 검증을 성공한다. 물론 스키마에 정의된 필드가 없거나 타입이 다르면 유효성 검증에 실패한다.
+
+```
+const UserSchema = z.object({
+  id: z.number(),
+});
+
+const rawInput = {
+  id: 123,
+  extraInfo: "스키마에 없는 데이터", // 스키마에 정의되지 않음
+};
+
+console.log(UserSchema.parse(rawInput))
+-> { id: 123 }
+```
+
+만약 스키마에 없는 필드가 포함된 경우 오류를 발생시키고 싶다면 `.strict()` 를 사용하면 된다
+```
+const UserSchema = z.object({
+  id: z.number(),
+}).strict();
+
+const rawInput = {
+  id: 123,
+  extraInfo: "스키마에 없는 데이터", // 스키마에 정의되지 않음
+};
+
+console.log(UserSchema.parse(rawInput)) //검증 실패 오류 발생
+```
+
+
+
 참고자료 <br />
 https://zod.dev/ <br />
 https://isaac-christian.tistory.com/entry/TypeScript-Zod-%ED%83%80%EC%9E%85-%EA%B2%80%EC%A6%9D-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC <br />
 https://velog.io/@jinyoung985/TypeScript-zod-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC%EB%9E%80 <br />
-https://velog.io/@anlee/Zod-%EC%99%84%EC%A0%84-%EC%A0%95%EB%B3%B5-%ED%83%80%EC%9E%85-%EC%95%88%EC%A0%84%EC%84%B1%EA%B3%BC-%EB%9F%B0%ED%83%80%EC%9E%84-%EA%B2%80%EC%A6%9D-%EB%91%90-%EB%A7%88%EB%A6%AC-%ED%86%A0%EB%81%BC%EB%A5%BC-%EC%9E%A1%EB%8A%94-%EB%B2%95
+https://velog.io/@anlee/Zod-%EC%99%84%EC%A0%84-%EC%A0%95%EB%B3%B5-%ED%83%80%EC%9E%85-%EC%95%88%EC%A0%84%EC%84%B1%EA%B3%BC-%EB%9F%B0%ED%83%80%EC%9E%84-%EA%B2%80%EC%A6%9D-%EB%91%90-%EB%A7%88%EB%A6%AC-%ED%86%A0%EB%81%BC%EB%A5%BC-%EC%9E%A1%EB%8A%94-%EB%B2%95 <br />
+https://velog.io/@odyssey/Zod%EB%A5%BC-%ED%99%9C%EC%9A%A9%ED%95%9C-%EC%9C%A0%ED%9A%A8%EC%84%B1-%EA%B2%80%EC%A6%9D-%EC%97%90%EB%9F%AC-%EB%A9%94%EC%8B%9C%EC%A7%80-%EC%B2%98%EB%A6%AC <br />
+https://gemini.google.com/share/e4b7939c64d8 <br />
+https://chatgpt.com/share/695e65f8-15d4-800c-9477-1b3461aa3f33

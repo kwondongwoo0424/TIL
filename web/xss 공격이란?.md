@@ -121,6 +121,9 @@ HttpOnly 쿠키
 안전한 API 사용 지침
 innerHTML, dangerouslySetInnerHTML, eval(), document.write() 등 문자열을 코드로 실행할 위험이 있는 API 사용을 지양하고, textContent 등 안전한 대안을 사용한다.
 
+CSP 설정
+메타 태그에 Content-Security-Policy(CSP)를 설정하여 브라우저에 실행을 허용할 컨텐츠 소스를 제한할 수 있다.
+
 참고자료 <br />
 https://4rgos.tistory.com/1 <br />
 https://pandyo.tistory.com/entry/XSS-Cross-Site-Scripting#DOM%20Based%20XSS-1 <br />
